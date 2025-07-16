@@ -2,6 +2,7 @@ package com.dvo.bankAccountManager.web.controller
 
 import com.dvo.bankAccountManager.mapper.PinsMapper
 import com.dvo.bankAccountManager.service.PinsService
+import com.dvo.bankAccountManager.web.filter.PinsFilter
 import com.dvo.bankAccountManager.web.model.request.UpdatePinsRequest
 import com.dvo.bankAccountManager.web.model.request.UpsertPinsRequest
 import com.dvo.bankAccountManager.web.model.response.PinsResponse
@@ -32,6 +33,15 @@ class PinsController(
         val pins = pinsService.findAll().map(pinsMapper::pinsToResponse)
 
         return ResponseEntity.ok(pins)
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get pins", description = "Get all pins by filter", tags = ["pins"])
+    fun findAllByFilter(@Valid filter: PinsFilter): ResponseEntity<List<PinsResponse>> {
+        val pinsList = pinsService.findAllByFilter(filter)
+
+        return ResponseEntity.ok(pinsList.map(pinsMapper::pinsToResponse))
     }
 
     @GetMapping("/{id}")

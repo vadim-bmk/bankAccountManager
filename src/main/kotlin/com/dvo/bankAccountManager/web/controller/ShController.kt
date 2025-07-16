@@ -2,6 +2,7 @@ package com.dvo.bankAccountManager.web.controller
 
 import com.dvo.bankAccountManager.mapper.ShMapper
 import com.dvo.bankAccountManager.service.ShService
+import com.dvo.bankAccountManager.web.filter.ShFilter
 import com.dvo.bankAccountManager.web.model.request.UpdateShRequest
 import com.dvo.bankAccountManager.web.model.request.UpsertShRequest
 import com.dvo.bankAccountManager.web.model.response.ShResponse
@@ -33,6 +34,15 @@ class ShController(
         return ResponseEntity.ok(
             shService.findAll().map(shMapper::shToResponse)
         )
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get all SH by filter", description = "Get all SH by filter", tags = ["sh"])
+    fun findAllByFilter(@Valid filter: ShFilter): ResponseEntity<List<ShResponse>>{
+        val shList = shService.findAllByFilter(filter)
+
+        return ResponseEntity.ok(shList.map(shMapper::shToResponse))
     }
 
     @GetMapping("/{id}")

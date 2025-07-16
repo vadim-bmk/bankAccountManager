@@ -5,10 +5,14 @@ import com.dvo.bankAccountManager.exception.EntityExistsException
 import com.dvo.bankAccountManager.exception.EntityNotFoundException
 import com.dvo.bankAccountManager.mapper.PinsMapper
 import com.dvo.bankAccountManager.repository.PinsRepository
+import com.dvo.bankAccountManager.repository.PinsSpecification
 import com.dvo.bankAccountManager.service.PinsService
+import com.dvo.bankAccountManager.web.filter.PinsFilter
 import com.dvo.bankAccountManager.web.model.request.UpdatePinsRequest
 import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 
 @Service
@@ -22,6 +26,19 @@ class PinsServiceImpl(
         log.info("Call findAll in PinsServiceImpl")
 
         return pinsRepository.findAll()
+    }
+
+    override fun findAllByFilter(filter: PinsFilter): List<Pins> {
+        log.info("Call findAllByFilter in PinsServiceImpl with filter: {}", filter)
+
+        val spec = PinsSpecification.withFilter(filter) ?: Specification.where(null)
+        val pageNumber = filter.pageNumber ?: 0
+        val pageSize = filter.pageSize ?: 10
+
+        return pinsRepository.findAll(
+            spec,
+            PageRequest.of(pageNumber, pageSize)
+        ).content
     }
 
     override fun findById(id: Long): Pins {

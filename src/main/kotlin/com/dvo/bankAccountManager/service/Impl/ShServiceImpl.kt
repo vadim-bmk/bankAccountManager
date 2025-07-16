@@ -5,10 +5,14 @@ import com.dvo.bankAccountManager.exception.EntityNotFoundException
 import com.dvo.bankAccountManager.mapper.ShMapper
 import com.dvo.bankAccountManager.repository.PinsRepository
 import com.dvo.bankAccountManager.repository.ShRepository
+import com.dvo.bankAccountManager.repository.ShSpecification
 import com.dvo.bankAccountManager.service.ShService
+import com.dvo.bankAccountManager.web.filter.ShFilter
 import com.dvo.bankAccountManager.web.model.request.UpdateShRequest
 import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 
 @Service
@@ -25,6 +29,19 @@ class ShServiceImpl(
         return shRepository.findAll()
     }
 
+    override fun findAllByFilter(filter: ShFilter): List<Sh> {
+        log.info("Call findAllByFilter in ShServiceImpl with filter: {}", filter)
+
+        val spec = ShSpecification.withFilter(filter) ?: Specification.where(null)
+        val pageNumber = filter.pageNumber ?: 0
+        val pageSize = filter.pageSize ?: 10
+
+        return shRepository.findAll(
+            spec,
+            PageRequest.of(pageNumber, pageSize)
+        ).content
+    }
+
     override fun findById(id: Long): Sh {
         log.info("Call findById in ShServiceImpl with ID: {}", id)
 
@@ -38,7 +55,7 @@ class ShServiceImpl(
     override fun save(sh: Sh): Sh {
         log.info("Call save in ShServiceImpl with sh: {}", sh)
 
-        if (!pinsRepository.existsByPinEq(sh.pinEq)){
+        if (!pinsRepository.existsByPinEq(sh.pinEq)) {
             throw EntityNotFoundException("Pin not found with pinEq: ${sh.pinEq}")
         }
 
@@ -55,7 +72,7 @@ class ShServiceImpl(
             }
 
 
-        if (!pinsRepository.existsByPinEq(sh.pinEq)){
+        if (!pinsRepository.existsByPinEq(sh.pinEq)) {
             throw EntityNotFoundException("Pin not found with pinEq: ${request.pinEq}")
         }
 

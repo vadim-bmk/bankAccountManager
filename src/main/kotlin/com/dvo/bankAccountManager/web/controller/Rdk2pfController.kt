@@ -2,6 +2,7 @@ package com.dvo.bankAccountManager.web.controller
 
 import com.dvo.bankAccountManager.mapper.Rdk2pfMapper
 import com.dvo.bankAccountManager.service.Rdk2pfService
+import com.dvo.bankAccountManager.web.filter.Rdk2pfFilter
 import com.dvo.bankAccountManager.web.model.request.UpdateRdk2pfRequest
 import com.dvo.bankAccountManager.web.model.request.UpsertRdk2pfRequest
 import com.dvo.bankAccountManager.web.model.response.Rdk2pfResponse
@@ -33,6 +34,15 @@ class Rdk2pfController(
             rdk2pfService.findAll().map(
                 rdk2pfMapper::rdk2pfToResponse
             )
+        )
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get all RDK2PF by filter", description = "Get all RDK2PF by filter", tags = ["rdk2pf"])
+    fun findAllByFilter(@Valid filter: Rdk2pfFilter): ResponseEntity<List<Rdk2pfResponse>> {
+        return ResponseEntity.ok(
+            rdk2pfService.findAllByFilter(filter).map(rdk2pfMapper::rdk2pfToResponse)
         )
     }
 
@@ -88,7 +98,7 @@ class Rdk2pfController(
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Delete RDK2PF", description = "Delete RDK2PF by ID", tags = ["rdk2pf"])
-    fun deleteById(@PathVariable id: Long){
+    fun deleteById(@PathVariable id: Long) {
         rdk2pfService.deleteById(id)
     }
 
