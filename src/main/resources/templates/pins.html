@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Pins Management</title>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+<section layout:fragment="content">
+<div th:if="${errorMessage}" class="alert alert-danger" style="color: red; margin-bottom: 1em;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<style>
+    body {
+       font-family: Arial, sans-serif;
+       font-size: 16px;
+       background-color: #f7f7f7;
+       color: #333;
+   }
+
+   .container {
+       margin: 0;
+       padding: 20px 40px;
+       text-align: left;
+       background-color: #ffffff;
+   }
+
+   h2 {
+       margin-bottom: 20px;
+   }
+
+   form {
+       margin-bottom: 30px;
+   }
+
+   form label {
+       display: flex;
+       align-items: center;
+       margin-bottom: 12px;
+   }
+
+   form label span {
+       display: inline-block;
+       width: 140px;
+       font-weight: 600;
+   }
+
+   form input[type="text"],
+   form input[type="date"],
+   form input[type="number"] {
+       flex: 1;
+       padding: 6px 8px;
+       font-size: 14px;
+       border: 1px solid #ccc;
+       border-radius: 4px;
+   }
+
+   form input[type="checkbox"] {
+       transform: scale(1.2);
+       margin-left: 8px;
+   }
+
+   form button {
+       padding: 8px 16px;
+       font-size: 14px;
+       border: none;
+       border-radius: 4px;
+       background-color: #007bff;
+       color: white;
+       cursor: pointer;
+       margin-top: 12px;
+   }
+
+   form button:hover {
+       background-color: #0056b3;
+   }
+
+   .error {
+       color: red;
+       font-size: 13px;
+       margin-left: 140px;
+       margin-top: -8px;
+       margin-bottom: 8px;
+   }
+
+   table {
+       width: 100%;
+       border-collapse: collapse;
+       margin-top: 30px;
+   }
+
+   table th, table td {
+       padding: 10px;
+       border: 1px solid #ccc;
+       text-align: left;
+       vertical-align: middle;
+   }
+
+   table th {
+       background-color: #eaeaea;
+       font-weight: bold;
+   }
+
+   tr:nth-child(even) {
+       background-color: #f9f9f9;
+   }
+
+   td form {
+       display: inline;
+   }
+
+   td button {
+       background-color: #28a745;
+       margin-left: 4px;
+   }
+
+   td button:hover {
+       background-color: #218838;
+   }
+
+   td form + form button {
+       background-color: #dc3545;
+   }
+
+   td form + form button:hover {
+       background-color: #c82333;
+   }
+</style>
+
+<h2>Pins Management</h2>
+
+<!-- Форма добавления -->
+<form th:action="@{/pins/create}" th:object="${newPin}" method="post">
+    <label><span>Pin EQ:</span> <input type="text" th:field="*{pinEq}" required/></label>
+    <div th:if="${#fields.hasErrors('pinEq')}" th:errors="*{pinEq}"></div>
+
+    <label><span>INN:</span> <input type="text" th:field="*{inn}" required/></label>
+    <div th:if="${#fields.hasErrors('inn')}" th:errors="*{inn}"></div>
+
+    <label><span>First Name:</span> <input type="text" th:field="*{firstName}" required/></label>
+    <div th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+
+    <label><span>Last Name:</span> <input type="text" th:field="*{lastName}" required/></label>
+    <div th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+
+    <label><span>Patronymic:</span> <input type="text" th:field="*{patronymic}" required/></label>
+    <div th:if="${#fields.hasErrors('patronymic')}" th:errors="*{patronymic}"></div>
+
+    <button type="submit">Добавить</button>
+</form>
+
+<hr/>
+
+<!-- Таблица существующих Pins -->
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Pin EQ</th>
+        <th>INN</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Patronymic</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="pin : ${pinsList}">
+        <form th:action="@{'/pins/update/' + ${pin.id}}" method="post">
+            <td th:text="${pin.id}"></td>
+            <td th:text="${pin.pinEq}"></td>
+            <td>
+                <input type="text" name="inn" th:value="${pin.inn}" />
+                <div th:if="${errorsMap != null and errorsMap[pin.id] != null}">
+                    <p th:each="err : ${errorsMap[pin.id]}" th:text="${err}" style="color: red;"></p>
+                </div>
+            </td>
+            <td><input type="text" name="firstName" th:value="${pin.firstName}" /></td>
+            <td><input type="text" name="lastName" th:value="${pin.lastName}" /></td>
+            <td><input type="text" name="patronymic" th:value="${pin.patronymic}" /></td>
+            <td>
+                <button type="submit">Обновить</button>
+        </form>
+        <form th:action="@{'/pins/delete/' + ${pin.id}}" method="post" style="display:inline;">
+            <button type="submit" onclick="return confirm('Удалить?')">Удалить</button>
+        </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</section>
+</body>
+</html>

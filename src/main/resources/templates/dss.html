@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>DSS Management</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<section layout:fragment="content">
+<h2>DSS Management</h2>
+<div th:if="${errorMessage}" class="alert alert-danger" style="color: red; margin-bottom: 1em;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<style>
+    body {
+       font-family: Arial, sans-serif;
+       font-size: 16px;
+       background-color: #f7f7f7;
+       color: #333;
+   }
+
+   .container {
+       margin: 0;
+       padding: 20px 40px;
+       text-align: left;
+       background-color: #ffffff;
+   }
+
+   h2 {
+       margin-bottom: 20px;
+   }
+
+   form {
+       margin-bottom: 30px;
+   }
+
+   form label {
+       display: flex;
+       align-items: center;
+       margin-bottom: 12px;
+   }
+
+   form label span {
+       display: inline-block;
+       width: 140px;
+       font-weight: 600;
+   }
+
+   form input[type="text"],
+   form input[type="date"],
+   form input[type="number"] {
+       flex: 1;
+       padding: 6px 8px;
+       font-size: 14px;
+       border: 1px solid #ccc;
+       border-radius: 4px;
+   }
+
+   form input[type="checkbox"] {
+       transform: scale(1.2);
+       margin-left: 8px;
+   }
+
+   form button {
+       padding: 8px 16px;
+       font-size: 14px;
+       border: none;
+       border-radius: 4px;
+       background-color: #007bff;
+       color: white;
+       cursor: pointer;
+       margin-top: 12px;
+   }
+
+   form button:hover {
+       background-color: #0056b3;
+   }
+
+   .error {
+       color: red;
+       font-size: 13px;
+       margin-left: 140px;
+       margin-top: -8px;
+       margin-bottom: 8px;
+   }
+
+   table {
+       width: 100%;
+       border-collapse: collapse;
+       margin-top: 30px;
+   }
+
+   table th, table td {
+       padding: 10px;
+       border: 1px solid #ccc;
+       text-align: left;
+       vertical-align: middle;
+   }
+
+   table th {
+       background-color: #eaeaea;
+       font-weight: bold;
+   }
+
+   tr:nth-child(even) {
+       background-color: #f9f9f9;
+   }
+
+   td form {
+       display: inline;
+   }
+
+   td button {
+       background-color: #28a745;
+       margin-left: 4px;
+   }
+
+   td button:hover {
+       background-color: #218838;
+   }
+
+   td form + form button {
+       background-color: #dc3545;
+   }
+
+   td form + form button:hover {
+       background-color: #c82333;
+   }
+</style>
+
+<!-- Форма добавления -->
+<form th:action="@{/dss/create}" th:object="${newDss}" method="post">
+
+    <label><span>REPORT DATE:</span>
+        <input type="date" th:field="*{repDate}" />
+        <div th:if="${#fields.hasErrors('repDate')}" th:errors="*{repDate}" style="color:red"></div>
+    </label>
+
+    <label><span>SBAL KOD:</span>
+        <input type="text" th:field="*{sbalKod}" />
+        <div th:if="${#fields.hasErrors('sbalKod')}" th:errors="*{sbalKod}" style="color:red"></div>
+    </label>
+
+    <label><span>SS KOD:</span>
+        <input type="text" th:field="*{ssKod}" />
+        <div th:if="${#fields.hasErrors('ssKod')}" th:errors="*{ssKod}" style="color:red"></div>
+    </label>
+
+    <label><span>OST:</span>
+        <input type="text" th:field="*{ost}" />
+        <div th:if="${#fields.hasErrors('ost')}" th:errors="*{ost}" style="color:red"></div>
+    </label>
+
+
+    <button type="submit">Добавить</button>
+</form>
+
+<!-- Сообщение об ошибке -->
+<div th:if="${errorMessage}" style="color:red;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<hr/>
+
+<!-- Таблица существующих SH -->
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>REPORT DATE</th>
+        <th>SBAL KOD</th>
+        <th>SS KOD</th>
+        <th>OST</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="dss : ${dssList}">
+        <form th:action="@{'/dss/update/' + ${dss.id}}" method="post" th:object="${dss}">
+            <td th:text="${dss.id}">1</td>
+            <td th:text="${dss.repDate}">2</td>
+            <td th:text="${dss.sbalKod}">3</td>
+            <td th:text="${dss.ssKod}">4</td>
+            <td><input type="text" name="ost" th:value="${dss.ost}" /></td>
+            <td>
+                <button type="submit">Обновить</button>
+        </form>
+        <form th:action="@{'/dss/delete/' + ${dss.id}}" method="post" style="display:inline;">
+            <button type="submit" onclick="return confirm('Удалить?')">Удалить</button>
+        </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</section>
+</body>
+</html>

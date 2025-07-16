@@ -7,17 +7,17 @@ import java.time.LocalDate
 data class UpsertRdk2pfRequest(
     @field:NotBlank(message = "Поле pinEq должно быть заполнено")
     @field:Size(max = 6, min = 6, message = "Поле pinEq должно быть 6 символов")
-    val pinEq: String,
+    val pinEq: String = "",
 
     @field:Size(max = 4, message = "Поле серия (ser) должно быть не более 4 символов")
-    val ser: String?,
+    val ser: String? = null,
 
     @field:Size(max = 4, message = "Поле номер (num) должно быть не более 10 символов")
-    val num: String?,
+    val num: String? = null,
 
     @field:Size(max = 255, message = "Поле отделение (otd) должно быть не 255 символов")
-    val otd: String?,
+    val otd: String? = null,
 
-    val open: LocalDate?,
-    val close: LocalDate?
+    val open: LocalDate? = null,
+    val close: LocalDate? = null
 )

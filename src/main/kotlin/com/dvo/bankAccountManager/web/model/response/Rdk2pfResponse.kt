@@ -8,6 +8,6 @@ data class Rdk2pfResponse(
     val ser: String?,
     val num: String?,
     val otd: String?,
-    val open: LocalDate,
+    val open: LocalDate?,
     val close: LocalDate?
 )

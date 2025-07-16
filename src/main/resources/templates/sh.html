@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>SH Management</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<section layout:fragment="content">
+<h2>SH Management</h2>
+<div th:if="${errorMessage}" class="alert alert-danger" style="color: red; margin-bottom: 1em;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<style>
+    body {
+       font-family: Arial, sans-serif;
+       font-size: 16px;
+       background-color: #f7f7f7;
+       color: #333;
+   }
+
+   .container {
+       margin: 0;
+       padding: 20px 40px;
+       text-align: left;
+       background-color: #ffffff;
+   }
+
+   h2 {
+       margin-bottom: 20px;
+   }
+
+   form {
+       margin-bottom: 30px;
+   }
+
+   form label {
+       display: flex;
+       align-items: center;
+       margin-bottom: 12px;
+   }
+
+   form label span {
+       display: inline-block;
+       width: 140px;
+       font-weight: 600;
+   }
+
+   form input[type="text"],
+   form input[type="date"],
+   form input[type="number"] {
+       flex: 1;
+       padding: 6px 8px;
+       font-size: 14px;
+       border: 1px solid #ccc;
+       border-radius: 4px;
+   }
+
+   form input[type="checkbox"] {
+       transform: scale(1.2);
+       margin-left: 8px;
+   }
+
+   form button {
+       padding: 8px 16px;
+       font-size: 14px;
+       border: none;
+       border-radius: 4px;
+       background-color: #007bff;
+       color: white;
+       cursor: pointer;
+       margin-top: 12px;
+   }
+
+   form button:hover {
+       background-color: #0056b3;
+   }
+
+   .error {
+       color: red;
+       font-size: 13px;
+       margin-left: 140px;
+       margin-top: -8px;
+       margin-bottom: 8px;
+   }
+
+   table {
+       width: 100%;
+       border-collapse: collapse;
+       margin-top: 30px;
+   }
+
+   table th, table td {
+       padding: 10px;
+       border: 1px solid #ccc;
+       text-align: left;
+       vertical-align: middle;
+   }
+
+   table th {
+       background-color: #eaeaea;
+       font-weight: bold;
+   }
+
+   tr:nth-child(even) {
+       background-color: #f9f9f9;
+   }
+
+   td form {
+       display: inline;
+   }
+
+   td button {
+       background-color: #28a745;
+       margin-left: 4px;
+   }
+
+   td button:hover {
+       background-color: #218838;
+   }
+
+   td form + form button {
+       background-color: #dc3545;
+   }
+
+   td form + form button:hover {
+       background-color: #c82333;
+   }
+</style>
+<!-- Форма добавления -->
+<form th:action="@{/sh/create}" th:object="${newSh}" method="post">
+
+    <label><span>SBAL KOD:</span>
+        <input type="text" th:field="*{sbalKod}" />
+        <div th:if="${#fields.hasErrors('sbalKod')}" th:errors="*{sbalKod}" style="color:red"></div>
+    </label>
+
+    <label><span>SS KOD:</span>
+        <input type="text" th:field="*{ssKod}" />
+        <div th:if="${#fields.hasErrors('ssKod')}" th:errors="*{ssKod}" style="color:red"></div>
+    </label>
+
+    <label><span>SS NAIM:</span>
+        <input type="text" th:field="*{ssNaim}" />
+        <div th:if="${#fields.hasErrors('ssNaim')}" th:errors="*{ssNaim}" style="color:red"></div>
+    </label>
+
+    <label><span>ACT P:</span>
+        <input type="checkbox" th:field="*{actP}" />
+        <div th:if="${#fields.hasErrors('actP')}" th:errors="*{actP}" style="color:red"></div>
+    </label>
+
+    <label><span>SS OPEN:</span>
+        <input type="date" th:field="*{ssOpen}" />
+        <div th:if="${#fields.hasErrors('ssOpen')}" th:errors="*{ssOpen}" style="color:red"></div>
+    </label>
+
+    <label><span>SS CLOSE:</span>
+        <input type="date" th:field="*{ssClose}" />
+        <div th:if="${#fields.hasErrors('ssClose')}" th:errors="*{ssClose}" style="color:red"></div>
+    </label>
+
+    <label><span>KV:</span>
+        <input type="text" th:field="*{kv}" />
+        <div th:if="${#fields.hasErrors('kv')}" th:errors="*{kv}" style="color:red"></div>
+    </label>
+
+    <label><span>PIN EQ:</span>
+        <input type="text" th:field="*{pinEq}" />
+        <div th:if="${#fields.hasErrors('pinEq')}" th:errors="*{pinEq}" style="color:red"></div>
+    </label>
+
+    <button type="submit">Добавить</button>
+</form>
+
+<!-- Сообщение об ошибке -->
+<div th:if="${errorMessage}" style="color:red;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<hr/>
+
+<!-- Таблица существующих SH -->
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>SBAL KOD</th>
+        <th>SS KOD</th>
+        <th>SS NAIM</th>
+        <th>ACT P</th>
+        <th>SS OPEN</th>
+        <th>SS CLOSE</th>
+        <th>SS KV</th>
+        <th>PIN EQ</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="sh : ${shList}">
+        <form th:action="@{'/sh/update/' + ${sh.id}}" method="post" th:object="${sh}">
+            <td th:text="${sh.id}">1</td>
+            <td><input type="text" name="sbalKod" th:value="${sh.sbalKod}" /></td>
+            <td><input type="text" name="ssKod" th:value="${sh.ssKod}" /></td>
+            <td><input type="text" name="ssNaim" th:value="${sh.ssNaim}" /></td>
+            <td><input type="checkbox" name="actP" th:value="${sh.actP}" /></td>
+            <td><input type="date" name="ssOpen" th:value="${sh.ssOpen}" /></td>
+            <td><input type="date" name="ssClose" th:value="${sh.ssClose}" /></td>
+            <td><input type="text" name="kv" th:value="${sh.kv}" /></td>
+            <td><input type="text" name="pinEq" th:value="${sh.pinEq}" /></td>
+            <td>
+                <button type="submit">Обновить</button>
+        </form>
+        <form th:action="@{'/sh/delete/' + ${sh.id}}" method="post" style="display:inline;">
+            <button type="submit" onclick="return confirm('Удалить?')">Удалить</button>
+        </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</section>
+</body>
+</html>
