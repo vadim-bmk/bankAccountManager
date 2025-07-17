@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 
 interface ShRepository : JpaRepository<Sh, Long>, JpaSpecificationExecutor<Sh> {
     fun existsBySbalKodAndSsKod(sbalKod: String, ssKod: String): Boolean
+    fun findByPinEq(pinEq: String): List<Sh>
 }
